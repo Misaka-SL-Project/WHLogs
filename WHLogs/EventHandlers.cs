@@ -274,6 +274,6 @@ namespace WHLogs
                 $"{Date} {string.Format(Plugin.Singleton.Translation.Scp106WasContained, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
-        private string Date => DateTime.Now.ToString("HH:mm:ss");
+        private string Date => $"[{DateTime.Now:HH:mm:ss}]";
     }
 }
