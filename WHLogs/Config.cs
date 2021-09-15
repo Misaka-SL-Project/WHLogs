@@ -11,6 +11,9 @@ namespace WHLogs
         [Description("Set the delay between log messages [This is the minimum, if this number is lower the plugin will not load to avoid discord ratelimit]")] 
         public float LogQueueDelay { get; set; } = 1.2f;
 
+        [Description("Should the IP addresses be censored?")]
+        public bool ShowIPAdresses { get; set; } = true;
+
         [Description("Set the webhook username")]
         public string Username { get; set; } = "Logs";
 

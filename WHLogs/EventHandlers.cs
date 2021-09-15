@@ -240,7 +240,7 @@ namespace WHLogs
         public void OnVerified(VerifiedEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.HasJoinedTheGame, ev.Player.Nickname, ev.Player.UserId, ev.Player.IPAddress)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.HasJoinedTheGame, ev.Player.Nickname, ev.Player.UserId, Plugin.Singleton.Config.ShowIPAdresses ? ev.Player.IPAddress : "REDACTED")}");
         }
 
         public void OnDestroying(DestroyingEventArgs ev)
