@@ -25,6 +25,10 @@ webhooklogs:
 
 **[EXILED 2.14.0](https://github.com/Exiled-Team/EXILED/releases/tag/2.14.0) must be installed for this to work.**
 
-Place the "WHLogs.dll" file in your Plugins folder.
-Windows: ``%appdata%/EXILED/Plugins``.
-Linux: ``.config/EXILED/Plugins``.
+# Installation - Linux
+
+Place the "WHLogs.dll" file in your plugins folder (``.config/EXILED/Plugins``)
+
+# Installation - Windows
+
+Place the "WHLogs.dll" file in your plugins folder (``%appdata%/EXILED/Plugins``)
