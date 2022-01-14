@@ -10,7 +10,7 @@
         }
             
         public string username { get; }
-        public  string avatar_url { get; }
-        public  string content { get; }
+        public string avatar_url { get; }
+        public string content { get; }
     }
 }
