@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
+using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
+using MapGeneration.Distributors;
 using NorthwoodLib.Pools;
 using Respawning;
 using Scp914;
@@ -26,7 +29,7 @@ namespace WHLogs
         public void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorFinished, ev.Generator.CurRoom, Generator079.mainGenerator.totalVoltage + 1)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorFinished, Generator.Get(ev.Generator).Room, Recontainer079.AllGenerators.Where(x=>x.Engaged))}");
         }
 
         public void OnStartingWarhead(StartingEventArgs ev)
@@ -53,36 +56,10 @@ namespace WHLogs
                 $"{Date} {Plugin.Singleton.Translation.WarheadHasDetonated}");
         }
 
-        public void OnUpgradingItems(UpgradingItemsEventArgs ev)
+        public void OnUpgradingItems(UpgradingItemEventArgs ev)
         {
-            {
-                StringBuilder players = StringBuilderPool.Shared.Rent();
-                StringBuilder items = StringBuilderPool.Shared.Rent();
-
-                foreach (Player player in ev.Players)
-                    players.Append(player.Nickname).Append(" (").Append(player.UserId).Append(") [").Append(player.Role)
-                        .Append(']').AppendLine();
-
-                foreach (Pickup item in ev.Items)
-                    items.Append(item.ItemId.ToString()).AppendLine();
-
-                Plugin.Singleton.GameLogsQueue.Add(
-                    $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914HasProcessedTheFollowingPlayers, players, items)}");
-                StringBuilderPool.Shared.Return(players);
-                StringBuilderPool.Shared.Return(items);
-            }
-        }
-
-        public void OnSendingRemoteAdminCommand(SendingRemoteAdminCommandEventArgs ev)
-        {
-            Plugin.Singleton.CommandLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.UsedCommand, ev.CommandSender.Nickname, ev.CommandSender.SenderId ?? Plugin.Singleton.Translation.DedicatedServer, ev.Sender.Role, ev.Name, string.Join(" ", ev.Arguments))}");
-        }
-
-        public void OnSendingConsoleCommand(SendingConsoleCommandEventArgs ev)
-        {
-            Plugin.Singleton.CommandLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.HasRunClientConsoleCommand, ev.Player.Nickname, ev.Player.UserId ?? Plugin.Singleton.Translation.DedicatedServer, ev.Player.Role, ev.Name, string.Join(" ", ev.Arguments))}");
+            Plugin.Singleton.GameLogsQueue.Add(
+                    $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914HasProcessedTheFollowingPlayers, ev.Item)}");
         }
 
         public void OnRoundStarted()
@@ -109,10 +86,10 @@ namespace WHLogs
                 $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914KnobSettingChanged, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.KnobSetting)}");
         }
 
-        public void OnUsedMedicalItem(UsedMedicalItemEventArgs ev)
+        public void OnUsedMedicalItem(UsedItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.UsedMedicalItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.UsedItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item)}");
         }
 
         public void OnInteractingTesla(InteractingTeslaEventArgs ev)
@@ -124,16 +101,16 @@ namespace WHLogs
         public void OnPickingUpItem(PickingUpItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.HasPickedUp, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Pickup.ItemId)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.HasPickedUp, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Pickup.Type)}");
         }
 
-        public void OnInsertingGeneratorTablet(InsertingGeneratorTabletEventArgs ev)
+        public void OnInsertingGeneratorTablet(ActivatingGeneratorEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
                 $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorInserted, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
-        public void OnEjectingGeneratorTablet(EjectingGeneratorTabletEventArgs ev)
+        public void OnEjectingGeneratorTablet(StoppingGeneratorEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
                 $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorEjected, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
@@ -142,7 +119,7 @@ namespace WHLogs
         public void OnGainingLevel(GainingLevelEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.OldLevel, ev.NewLevel)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.NewLevel-1, ev.NewLevel)}");
         }
 
         public void OnEscapingPocketDimension(EscapingPocketDimensionEventArgs ev)
@@ -169,30 +146,30 @@ namespace WHLogs
                 $"{Date} {string.Format(Plugin.Singleton.Translation.HasTriggeredATeslaGate, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
-        public void OnThrowingGrenade(ThrowingGrenadeEventArgs ev)
+        public void OnThrowingGrenade(ThrowingItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.ThrewAGrenade, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Type)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.ThrewAnItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type)}");
         }
 
         public void OnHurting(HurtingEventArgs ev)
         {
             if (ev.Attacker != null && ev.Target != null)
                 Plugin.Singleton.PvPLogsQueue.Add(
-                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasDamagedForWith, ev.Attacker.Nickname, ev.Attacker.UserId, ev.Attacker.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, DamageTypes.FromIndex(ev.Tool).name)}");
+                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasDamagedForWith, ev.Attacker.Nickname, ev.Attacker.UserId, ev.Attacker.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, ev.Handler.Type)}");
         }
 
         public void OnDying(DyingEventArgs ev)
         {
             if (ev.Killer != null && ev.Target != null)
                 Plugin.Singleton.PvPLogsQueue.Add(
-                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasKilledWith, ev.Killer.Nickname, ev.Killer.UserId, ev.Killer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, DamageTypes.FromIndex(ev.HitInformation.Tool).name)}");
+                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasKilledWith, ev.Killer.Nickname, ev.Killer.UserId, ev.Killer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Handler.Type)}");
         }
 
         public void OnInteractingDoor(InteractingDoorEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(ev.Door.NetworkTargetState ? Plugin.Singleton.Translation.HasClosedADoor : Plugin.Singleton.Translation.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Door.GetNametag())}");
+                $"{Date} {string.Format(ev.Door.IsLocked ? Plugin.Singleton.Translation.HasClosedADoor : Plugin.Singleton.Translation.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Door.Nametag)}");
         }
 
         public void OnInteractingElevator(InteractingElevatorEventArgs ev)
@@ -231,10 +208,10 @@ namespace WHLogs
                 $"{Date} {string.Format(Plugin.Singleton.Translation.Scp106Teleported, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
-        public void OnItemDropped(ItemDroppedEventArgs ev)
+        public void OnItemDropped(DroppingItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.HasDropped, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Pickup.ItemId)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.HasDropped, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type)}");
         }
 
         public void OnVerified(VerifiedEventArgs ev)
@@ -258,14 +235,14 @@ namespace WHLogs
         public void OnChangingItem(ChangingItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.ItemChanged, ev.Player.Nickname, ev.Player.UserId, ev.OldItem.id, ev.NewItem.id)}"
+                $"{Date} {string.Format(Plugin.Singleton.Translation.ItemChanged, ev.Player.Nickname, ev.Player.UserId, ev.NewItem.Type)}"
             );
         }
 
         public void OnActivatingScp914(ActivatingEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914HasBeenActivated, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, Scp914Machine.singleton.knobState)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914HasBeenActivated, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, Exiled.API.Features.Scp914.KnobStatus)}");
         }
 
         public void OnContaining(ContainingEventArgs ev)
