@@ -4,10 +4,7 @@ namespace WHLogs
 {
     public class Translation : ITranslation
     {
-        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {3} {4}";
-
-        public string HasRunClientConsoleCommand { get; set; } =
-            ":keyboard: {0} ({1}) [{2}] has run a client-console command: {3} {4}";
+        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {3}";
 
         public string WaitingForPlayers { get; set; } = $":hourglass: Waiting for players...";
 
@@ -21,9 +18,9 @@ namespace WHLogs
         public string HasKilledWith { get; set; } =
             ":skull_crossbones: **{0} ({1}) [{2}] killed {3} ({4}) [{5}] with {6}.**";
 
-        public string ThrewAGrenade { get; set; } = ":boom: {0} ({1}) [{2}] threw a {3}.";
+        public string ThrewAnItem { get; set; } = ":boom: {0} ({1}) [{2}] threw a {3}.";
 
-        public string UsedMedicalItem { get; set; } = ":medical_symbol: {0} ({1}) [{2}] healed with {3}.";
+        public string UsedItem { get; set; } = ":wrench: {0} ({1}) [{2}] used the following item: {3}.";
 
         public string ChangedRole { get; set; } = ":mens: {0} ({1}) [{2}] has been changed to a {3}.";
 
@@ -56,7 +53,7 @@ namespace WHLogs
         public string HasTriggeredATeslaGate { get; set; } = ":zap: {0} ({1}) [{2}] has triggered a tesla gate.";
 
         public string Scp914HasProcessedTheFollowingPlayers { get; set; } =
-            ":gear: SCP-914 has processed the following players:\n **{0}**\nand items:\n **{1}**";
+            ":gear: SCP-914 has processed the following item: **{0}**";
 
         public string HasClosedADoor { get; set; } = ":door: {0} ({1}) [{2}] has closed {3} door.";
 
@@ -88,13 +85,13 @@ namespace WHLogs
 
         public string UsedLocker { get; set; } = "{0} ({1}) [{2}] has opened a locker.";
 
-        public string GeneratorEjected { get; set; } = "{0} ({1}) [{2}] has ejected a tablet from a generator.";
+        public string GeneratorEjected { get; set; } = "{0} ({1}) [{2}] has stopped a generator.";
 
         public string GeneratorFinished { get; set; } =
             "Generator in {0} has finished it's charge up, {1} generators have been activated.";
 
         public string GeneratorInserted { get; set; } =
-            ":calling: {0} ({1}) [{2}] has inserted a tablet into a generator.";
+            ":calling: {0} ({1}) [{2}] activated a generator.";
 
         public string Scp106WasContained { get; set; } = "{0} ({1}) [{2}] has been contained by the Femur Breaker.";
 
@@ -105,7 +102,7 @@ namespace WHLogs
         public string LeftServer { get; set; } = ":arrow_left: **{0} ({1}) [{2}] has left the server.**";
 
         public string ItemChanged { get; set; } =
-            "{0} ({1}) [{2}] changed the item in their hand: {2} :arrow_right: {3}.";
+            "{0} ({1}) [{2}] changed the item in their hand: {2}.";
 
         public string DedicatedServer { get; set; } = "Dedicated server";
     }
