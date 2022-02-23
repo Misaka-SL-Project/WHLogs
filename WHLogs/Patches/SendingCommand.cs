@@ -35,7 +35,6 @@ namespace WHLogs.Patches
         private static void LogCommand(string query, CommandSender s)
         {
             Player sender = Player.Get(s);
-            Log.Debug("e");
             string[] args = query.Trim().Split(QueryProcessor.SpaceArray, 512, StringSplitOptions.RemoveEmptyEntries);
             if (args[0].StartsWith("$"))
                 return;
