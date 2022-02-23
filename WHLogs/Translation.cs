@@ -4,7 +4,7 @@ namespace WHLogs
 {
     public class Translation : ITranslation
     {
-        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {3}";
+        public string UsedCommand { get; set; } = ":keyboard: {0} ({1}) [{2}] used command: {3} {4}";
 
         public string WaitingForPlayers { get; set; } = $":hourglass: Waiting for players...";
 
