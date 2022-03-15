@@ -1,6 +1,6 @@
 [![Github All Releases](https://img.shields.io/github/downloads/xRoier/WHLogs/total?color=blueviolet&style=for-the-badge)]()
 # WebhookLogs
-A "simple" plugin that logs game events (and commands) through discord webhooks.
+A dirty and simple plugin that logs game events (and commands) through discord webhooks.
 
 # Config
 ```
