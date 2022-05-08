@@ -5,7 +5,6 @@ using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
 using Exiled.Events.EventArgs;
-using MapGeneration.Distributors;
 using NorthwoodLib.Pools;
 using Respawning;
 using Scp914;
@@ -29,7 +28,7 @@ namespace WHLogs
         public void OnGeneratorActivated(GeneratorActivatedEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorFinished, Generator.Get(ev.Generator).Room, Recontainer079.AllGenerators.Where(x=>x.Engaged))}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorFinished, ev.Generator.Room.Name, Generator.List.Count(x => x.IsEngaged) + 1)}");
         }
 
         public void OnStartingWarhead(StartingEventArgs ev)
@@ -54,12 +53,6 @@ namespace WHLogs
         {
             Plugin.Singleton.GameLogsQueue.Add(
                 $"{Date} {Plugin.Singleton.Translation.WarheadHasDetonated}");
-        }
-
-        public void OnUpgradingItems(UpgradingItemEventArgs ev)
-        {
-            Plugin.Singleton.GameLogsQueue.Add(
-                    $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914HasProcessedTheFollowingPlayers, ev.Item)}");
         }
 
         public void OnRoundStarted()
@@ -89,7 +82,7 @@ namespace WHLogs
         public void OnUsedMedicalItem(UsedItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.UsedItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.UsedMedicalItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item)}");
         }
 
         public void OnInteractingTesla(InteractingTeslaEventArgs ev)
@@ -104,22 +97,10 @@ namespace WHLogs
                 $"{Date} {string.Format(Plugin.Singleton.Translation.HasPickedUp, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Pickup.Type)}");
         }
 
-        public void OnInsertingGeneratorTablet(ActivatingGeneratorEventArgs ev)
-        {
-            Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorInserted, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
-        }
-
-        public void OnEjectingGeneratorTablet(StoppingGeneratorEventArgs ev)
-        {
-            Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.GeneratorEjected, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
-        }
-
         public void OnGainingLevel(GainingLevelEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.NewLevel-1, ev.NewLevel)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.GainedLevel, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.NewLevel)}");
         }
 
         public void OnEscapingPocketDimension(EscapingPocketDimensionEventArgs ev)
@@ -149,7 +130,7 @@ namespace WHLogs
         public void OnThrowingGrenade(ThrowingItemEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.ThrewAnItem, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.ThrewAGrenade, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type)}");
         }
 
         public void OnHurting(HurtingEventArgs ev)
@@ -169,7 +150,7 @@ namespace WHLogs
         public void OnInteractingDoor(InteractingDoorEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(ev.Door.IsLocked ? Plugin.Singleton.Translation.HasClosedADoor : Plugin.Singleton.Translation.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Door.Nametag)}");
+                $"{Date} {string.Format(ev.Door.IsOpen ? Plugin.Singleton.Translation.HasClosedADoor : Plugin.Singleton.Translation.HasOpenedADoor, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Door.Nametag)}");
         }
 
         public void OnInteractingElevator(InteractingElevatorEventArgs ev)

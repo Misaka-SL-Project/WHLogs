@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Exiled.API.Features;
-using HarmonyLib;
 using MEC;
 using Utf8Json;
 using UnityEngine.Networking;
@@ -15,11 +14,11 @@ namespace WHLogs
         public override string Author => "xRoier";
         public override string Name => "WebhookLogs";
         public override string Prefix => "webhooklogs";
-        public override Version Version => new Version(2, 0, 1);
-        public override Version RequiredExiledVersion => new Version(2, 14, 0);
+        public override Version Version => new Version(3, 0, 0);
+        public override Version RequiredExiledVersion => new Version(5,2,1);
 
         public static Plugin Singleton;
-        private Harmony h;
+        
         public List<string> GameLogsQueue = new List<string>();
         public List<string> PvPLogsQueue = new List<string>();
         public List<string> CommandLogsQueue = new List<string>();
@@ -27,7 +26,7 @@ namespace WHLogs
         private List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
 
         private EventHandlers EventHandlers;
-        private string id = "whlogs.plugin";
+
         public override void OnEnabled()
         {
             if (Config.GameEventsLogsWebhookUrl == "fill me" || Config.CommandLogsWebhookUrl == "fill me" || Config.PvpEventsLogsWebhookUrl == "fill me")
@@ -47,25 +46,20 @@ namespace WHLogs
             
             Singleton = this;
             EventHandlers = new EventHandlers();
-            h = new Harmony(id);
+
             Exiled.Events.Handlers.Map.Decontaminating += EventHandlers.OnDecontaminating;
             Exiled.Events.Handlers.Map.GeneratorActivated += EventHandlers.OnGeneratorActivated;
             Exiled.Events.Handlers.Warhead.Starting += EventHandlers.OnStartingWarhead;
             Exiled.Events.Handlers.Warhead.Stopping += EventHandlers.OnStoppingWarhead;
             Exiled.Events.Handlers.Warhead.Detonated += EventHandlers.OnWarheadDetonated;
-            Exiled.Events.Handlers.Scp914.UpgradingItem += EventHandlers.OnUpgradingItems;
-            //Exiled.Events.Handlers.Server.SendingRemoteAdminCommand += EventHandlers.OnSendingRemoteAdminCommand;
             Exiled.Events.Handlers.Server.WaitingForPlayers += EventHandlers.OnWaitingForPlayers;
-            //Exiled.Events.Handlers.Server.SendingConsoleCommand += EventHandlers.OnSendingConsoleCommand;
             Exiled.Events.Handlers.Server.RoundStarted += EventHandlers.OnRoundStarted;
             Exiled.Events.Handlers.Server.RoundEnded += EventHandlers.OnRoundEnded;
             Exiled.Events.Handlers.Server.RespawningTeam += EventHandlers.OnRespawningTeam;
             Exiled.Events.Handlers.Scp914.ChangingKnobSetting += EventHandlers.OnChangingScp914KnobSetting;
-            Exiled.Events.Handlers.Player.UsedItem += EventHandlers.OnUsedMedicalItem;
+            Exiled.Events.Handlers.Player.UsingItem += EventHandlers.OnUsedMedicalItem;
             Exiled.Events.Handlers.Scp079.InteractingTesla += EventHandlers.OnInteractingTesla;
             Exiled.Events.Handlers.Player.PickingUpItem += EventHandlers.OnPickingUpItem;
-            Exiled.Events.Handlers.Player.ActivatingGenerator += EventHandlers.OnInsertingGeneratorTablet;
-            Exiled.Events.Handlers.Player.StoppingGenerator += EventHandlers.OnEjectingGeneratorTablet;
             Exiled.Events.Handlers.Scp079.GainingLevel += EventHandlers.OnGainingLevel;
             Exiled.Events.Handlers.Player.EscapingPocketDimension += EventHandlers.OnEscapingPocketDimension;
             Exiled.Events.Handlers.Player.EnteringPocketDimension += EventHandlers.OnEnteringPocketDimension;
@@ -88,7 +82,7 @@ namespace WHLogs
             Exiled.Events.Handlers.Player.ChangingItem += EventHandlers.OnChangingItem;
             Exiled.Events.Handlers.Scp914.Activating += EventHandlers.OnActivatingScp914;
             Exiled.Events.Handlers.Scp106.Containing += EventHandlers.OnContaining;
-            h.PatchAll();
+
             Coroutines.Add(Timing.RunCoroutine(QueueSender(Config.LogQueueDelay)));
             base.OnEnabled();
         }
@@ -100,19 +94,14 @@ namespace WHLogs
             Exiled.Events.Handlers.Warhead.Starting -= EventHandlers.OnStartingWarhead;
             Exiled.Events.Handlers.Warhead.Stopping -= EventHandlers.OnStoppingWarhead;
             Exiled.Events.Handlers.Warhead.Detonated -= EventHandlers.OnWarheadDetonated;
-            Exiled.Events.Handlers.Scp914.UpgradingItem -= EventHandlers.OnUpgradingItems;
-            //Exiled.Events.Handlers.Server.SendingRemoteAdminCommand -= EventHandlers.OnSendingRemoteAdminCommand;
             Exiled.Events.Handlers.Server.WaitingForPlayers -= EventHandlers.OnWaitingForPlayers;
-            //Exiled.Events.Handlers.Server.SendingConsoleCommand -= EventHandlers.OnSendingConsoleCommand;
             Exiled.Events.Handlers.Server.RoundStarted -= EventHandlers.OnRoundStarted;
             Exiled.Events.Handlers.Server.RoundEnded -= EventHandlers.OnRoundEnded;
             Exiled.Events.Handlers.Server.RespawningTeam -= EventHandlers.OnRespawningTeam;
             Exiled.Events.Handlers.Scp914.ChangingKnobSetting -= EventHandlers.OnChangingScp914KnobSetting;
-            Exiled.Events.Handlers.Player.UsedItem -= EventHandlers.OnUsedMedicalItem;
+            Exiled.Events.Handlers.Player.UsingItem -= EventHandlers.OnUsedMedicalItem;
             Exiled.Events.Handlers.Scp079.InteractingTesla -= EventHandlers.OnInteractingTesla;
             Exiled.Events.Handlers.Player.PickingUpItem -= EventHandlers.OnPickingUpItem;
-            Exiled.Events.Handlers.Player.ActivatingGenerator -= EventHandlers.OnInsertingGeneratorTablet;
-            Exiled.Events.Handlers.Player.StoppingGenerator -= EventHandlers.OnEjectingGeneratorTablet;
             Exiled.Events.Handlers.Scp079.GainingLevel -= EventHandlers.OnGainingLevel;
             Exiled.Events.Handlers.Player.EscapingPocketDimension -= EventHandlers.OnEscapingPocketDimension;
             Exiled.Events.Handlers.Player.EnteringPocketDimension -= EventHandlers.OnEnteringPocketDimension;
@@ -135,9 +124,9 @@ namespace WHLogs
             Exiled.Events.Handlers.Player.ChangingItem -= EventHandlers.OnChangingItem;
             Exiled.Events.Handlers.Scp914.Activating -= EventHandlers.OnActivatingScp914;
             Exiled.Events.Handlers.Scp106.Containing -= EventHandlers.OnContaining;
-            h.UnpatchAll(id);
+
             EventHandlers = null;
-            h = null;
+
             foreach (var coroutine in Coroutines)
                 Timing.KillCoroutines(coroutine);
 
