@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Exiled.API.Features;
+using HarmonyLib;
 using MEC;
 using Utf8Json;
 using UnityEngine.Networking;
@@ -16,17 +17,14 @@ namespace WHLogs
         public override string Prefix => "webhooklogs";
         public override Version Version => new Version(4, 0, 0);
         public override Version RequiredExiledVersion => new Version(5,2,1);
-
         public static Plugin Singleton;
-        
         public List<string> GameLogsQueue = new List<string>();
         public List<string> PvPLogsQueue = new List<string>();
         public List<string> CommandLogsQueue = new List<string>();
-        
         private List<CoroutineHandle> Coroutines = new List<CoroutineHandle>();
-
         private EventHandlers EventHandlers;
-
+        private Harmony _harmony;
+        
         public override void OnEnabled()
         {
             if (Config.GameEventsLogsWebhookUrl == "fill me" || Config.CommandLogsWebhookUrl == "fill me" || Config.PvpEventsLogsWebhookUrl == "fill me")
@@ -46,7 +44,8 @@ namespace WHLogs
             
             Singleton = this;
             EventHandlers = new EventHandlers();
-
+            _harmony = new Harmony($"com.xroier.webhooklogs-{DateTime.Now.Ticks}");
+            _harmony.PatchAll();
             Exiled.Events.Handlers.Map.Decontaminating += EventHandlers.OnDecontaminating;
             Exiled.Events.Handlers.Map.GeneratorActivated += EventHandlers.OnGeneratorActivated;
             Exiled.Events.Handlers.Warhead.Starting += EventHandlers.OnStartingWarhead;
@@ -126,6 +125,7 @@ namespace WHLogs
             Exiled.Events.Handlers.Scp106.Containing -= EventHandlers.OnContaining;
 
             EventHandlers = null;
+            _harmony.UnpatchAll(_harmony.Id);
 
             foreach (var coroutine in Coroutines)
                 Timing.KillCoroutines(coroutine);

@@ -39,7 +39,7 @@ namespace WHLogs.Patches
             if (args[0].StartsWith("$"))
                 return;
             Plugin.Singleton.CommandLogsQueue.Add(
-                $"[{DateTime.Now:HH:mm:ss}] {string.Format(Plugin.Singleton.Translation.UsedCommand, sender.Nickname ?? "Dedicated Server", sender.UserId ?? Plugin.Singleton.Translation.DedicatedServer, sender.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))}");
+                $"[{EventHandlers.Date}] {string.Format(Plugin.Singleton.Translation.UsedCommand, sender.Nickname ?? "Dedicated Server", sender.UserId ?? Plugin.Singleton.Translation.DedicatedServer, sender.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))}");
         }
     }
 }
