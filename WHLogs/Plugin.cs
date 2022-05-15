@@ -36,8 +36,7 @@ namespace WHLogs
             
             if (Config.LogQueueDelay < 1.2f)
             {
-                Log.Warn(
-                    "You should not set the delay below 1.2 seconds to avoid Discord ratelimits, the plugin will not load.");
+                Log.Warn("You should not set the delay below 1.2 seconds to avoid Discord ratelimits, the plugin will not load.");
                 OnDisabled();
                 return;
             }
