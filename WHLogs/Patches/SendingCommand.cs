@@ -14,7 +14,7 @@ namespace WHLogs.Patches
     [HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery))]
     public class SendingCommand
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
             const int index = 0;
@@ -32,14 +32,15 @@ namespace WHLogs.Patches
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
 
-        private static void LogCommand(string query, CommandSender s)
+        private static void LogCommand(string query, CommandSender sender)
         {
-            Player sender = Player.Get(s);
             string[] args = query.Trim().Split(QueryProcessor.SpaceArray, 512, StringSplitOptions.RemoveEmptyEntries);
             if (args[0].StartsWith("$"))
                 return;
-            Plugin.Singleton.CommandLogsQueue.Add(
-                $"[{EventHandlers.Date}] {string.Format(Plugin.Singleton.Translation.UsedCommand, sender.Nickname ?? "Dedicated Server", sender.UserId ?? Plugin.Singleton.Translation.DedicatedServer, sender.Role, args[0], string.Join(" ", args.Where(a => a != args[0])))}");
+            Player player = sender is PlayerCommandSender playerCommandSender ? Player.Get(playerCommandSender) : Server.Host;
+            if (player == null)
+                return;
+            Plugin.Singleton.CommandLogsQueue.Add($"[{EventHandlers.Date}] {string.Format(Plugin.Singleton.Translation.UsedCommand, sender.Nickname ?? "Dedicated Server", player.UserId ?? Plugin.Singleton.Translation.DedicatedServer, player.Role.Type, args[0], string.Join(" ", args.Where(a => a != args[0])))}");
         }
     }
 }
