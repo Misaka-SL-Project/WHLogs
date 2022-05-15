@@ -15,7 +15,7 @@ namespace WHLogs
         public override string Author => "xRoier";
         public override string Name => "WebhookLogs";
         public override string Prefix => "webhooklogs";
-        public override Version Version => new Version(4, 0, 0);
+        public override Version Version => new Version(4, 0, 1);
         public override Version RequiredExiledVersion => new Version(5,2,1);
         public static Plugin Singleton;
         public List<string> GameLogsQueue = new List<string>();
