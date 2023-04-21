@@ -63,7 +63,6 @@ namespace WHLogs
             Exiled.Events.Handlers.Player.EnteringPocketDimension += EventHandlers.OnEnteringPocketDimension;
             Exiled.Events.Handlers.Player.ActivatingWarheadPanel += EventHandlers.OnActivatingWarheadPanel;
             Exiled.Events.Handlers.Player.TriggeringTesla += EventHandlers.OnTriggeringTesla;
-            Exiled.Events.Handlers.Player.ThrowingItem += EventHandlers.OnThrowingGrenade;
             Exiled.Events.Handlers.Player.Hurting += EventHandlers.OnHurting;
             Exiled.Events.Handlers.Player.Dying += EventHandlers.OnDying;
             Exiled.Events.Handlers.Player.InteractingDoor += EventHandlers.OnInteractingDoor;
@@ -79,7 +78,6 @@ namespace WHLogs
             Exiled.Events.Handlers.Player.ChangingRole += EventHandlers.OnChangingRole;
             Exiled.Events.Handlers.Player.ChangingItem += EventHandlers.OnChangingItem;
             Exiled.Events.Handlers.Scp914.Activating += EventHandlers.OnActivatingScp914;
-            Exiled.Events.Handlers.Scp106.Containing += EventHandlers.OnContaining;
 
             Coroutines.Add(Timing.RunCoroutine(QueueSender(Config.LogQueueDelay)));
             base.OnEnabled();
@@ -105,7 +103,6 @@ namespace WHLogs
             Exiled.Events.Handlers.Player.EnteringPocketDimension -= EventHandlers.OnEnteringPocketDimension;
             Exiled.Events.Handlers.Player.ActivatingWarheadPanel -= EventHandlers.OnActivatingWarheadPanel;
             Exiled.Events.Handlers.Player.TriggeringTesla -= EventHandlers.OnTriggeringTesla;
-            Exiled.Events.Handlers.Player.ThrowingItem -= EventHandlers.OnThrowingGrenade;
             Exiled.Events.Handlers.Player.Hurting -= EventHandlers.OnHurting;
             Exiled.Events.Handlers.Player.Dying -= EventHandlers.OnDying;
             Exiled.Events.Handlers.Player.InteractingDoor -= EventHandlers.OnInteractingDoor;
@@ -121,7 +118,6 @@ namespace WHLogs
             Exiled.Events.Handlers.Player.ChangingRole -= EventHandlers.OnChangingRole;
             Exiled.Events.Handlers.Player.ChangingItem -= EventHandlers.OnChangingItem;
             Exiled.Events.Handlers.Scp914.Activating -= EventHandlers.OnActivatingScp914;
-            Exiled.Events.Handlers.Scp106.Containing -= EventHandlers.OnContaining;
 
             EventHandlers = null;
             _harmony.UnpatchAll(_harmony.Id);

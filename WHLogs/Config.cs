@@ -8,6 +8,8 @@ namespace WHLogs
         [Description("Is the plugin enabled?")]
         public bool IsEnabled { get; set; } = true;
 
+        public bool Debug { get; set; } = false;
+
         [Description("Set the delay between log messages [This is the minimum, if this number is lower the plugin will not load to avoid discord ratelimit]")] 
         public float LogQueueDelay { get; set; } = 1.2f;
 

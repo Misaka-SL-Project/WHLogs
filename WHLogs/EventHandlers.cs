@@ -4,7 +4,14 @@ using System.Text;
 using Exiled.API.Extensions;
 using Exiled.API.Features;
 using Exiled.API.Features.Items;
-using Exiled.Events.EventArgs;
+using Exiled.Events.EventArgs.Player;
+using Exiled.Events.EventArgs.Map;
+using Exiled.Events.EventArgs.Warhead;
+using Exiled.Events.EventArgs.Server;
+using Exiled.Events.EventArgs.Scp079;
+using Exiled.Events.EventArgs.Scp106;
+using Exiled.Events.EventArgs.Scp914;
+using Exiled.Events.EventArgs.Cassie;
 using NorthwoodLib.Pools;
 using Respawning;
 using Scp914;
@@ -127,24 +134,24 @@ namespace WHLogs
                 $"{Date} {string.Format(Plugin.Singleton.Translation.HasTriggeredATeslaGate, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
-        public void OnThrowingGrenade(ThrowingItemEventArgs ev)
+        public void OnThrowingGrenade(ThrownProjectileEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.ThrewAGrenade, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Item.Type)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.ThrewAGrenade, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Projectile.Type)}");
         }
 
         public void OnHurting(HurtingEventArgs ev)
         {
-            if (ev.Attacker != null && ev.Target != null)
+            if (ev.Attacker != null && ev.Player != null)
                 Plugin.Singleton.PvPLogsQueue.Add(
-                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasDamagedForWith, ev.Attacker.Nickname, ev.Attacker.UserId, ev.Attacker.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Amount, ev.Handler.Type)}");
+                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasDamagedForWith, ev.Attacker.Nickname, ev.Attacker.UserId, ev.Attacker.Role, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.Amount, ev.DamageHandler.Type)}");
         }
 
         public void OnDying(DyingEventArgs ev)
         {
-            if (ev.Killer != null && ev.Target != null)
+            if (ev.Attacker != null && ev.Player != null)
                 Plugin.Singleton.PvPLogsQueue.Add(
-                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasKilledWith, ev.Killer.Nickname, ev.Killer.UserId, ev.Killer.Role, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Handler.Type)}");
+                    $"{Date} {string.Format(Plugin.Singleton.Translation.HasKilledWith, ev.Attacker.Nickname, ev.Attacker.UserId, ev.Attacker.Role, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, ev.DamageHandler.Type)}");
         }
 
         public void OnInteractingDoor(InteractingDoorEventArgs ev)
@@ -174,13 +181,13 @@ namespace WHLogs
         public void OnHandcuffing(HandcuffingEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.HasBeenHandcuffedBy, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Cuffer.Nickname, ev.Cuffer.UserId, ev.Cuffer.Role)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.HasBeenHandcuffedBy, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
         public void OnRemovingHandcuffs(RemovingHandcuffsEventArgs ev)
         {
             Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.HasBeenFreedBy, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Cuffer.Nickname, ev.Cuffer.UserId, ev.Cuffer.Role)}");
+                $"{Date} {string.Format(Plugin.Singleton.Translation.HasBeenFreedBy, ev.Target.Nickname, ev.Target.UserId, ev.Target.Role, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
         public void OnTeleporting(TeleportingEventArgs ev)
@@ -224,12 +231,6 @@ namespace WHLogs
         {
             Plugin.Singleton.GameLogsQueue.Add(
                 $"{Date} {string.Format(Plugin.Singleton.Translation.Scp914HasBeenActivated, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role, Exiled.API.Features.Scp914.KnobStatus)}");
-        }
-
-        public void OnContaining(ContainingEventArgs ev)
-        {
-            Plugin.Singleton.GameLogsQueue.Add(
-                $"{Date} {string.Format(Plugin.Singleton.Translation.Scp106WasContained, ev.Player.Nickname, ev.Player.UserId, ev.Player.Role)}");
         }
 
         public static string Date => $"[{DateTime.Now:HH:mm:ss}]";
