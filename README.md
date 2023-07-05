@@ -21,7 +21,7 @@ webhooklogs:
   pvp_events_logs_webhook_url: fill me
 ```
 
-**[EXILED 5.2.1](https://github.com/Exiled-Team/EXILED/releases/tag/5.2.1) must be installed for this to work.**
+**[EXILED 7](https://github.com/Exiled-Team/EXILED/releases/tag/7.2.0) must be installed for this to work.**
 
 # Installation - Linux
 
